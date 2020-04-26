@@ -211,6 +211,13 @@ class Sudoku:
             raise ValueError("Cell is already occupied")
 
     def fill_one_available_cells(self):
+        """Runs through all cells once and fills in those that
+        have only one value possible.
+
+        Returns:
+            Bool: True if at least one value was insterted. Otherwise False.
+        """
+        inserted = False
         for row_id in range(9):
             for col_id in range(9):
                 digits = self.get_available_digits_for_cell(row_id, col_id)
@@ -218,23 +225,11 @@ class Sudoku:
                     self.insert_value(row_id, col_id, *digits)
                     inserted = True
         return inserted
-
-sudoku = Sudoku(empty_sudoku)
-print(sudoku)
-
-######################
-sudoku_list = [{"sudoku": sudoku,
-                "row_id": None,
-                "col_id": None,
-                "available digits": None}]
-
-# %%
-
-inserted = sudoku.fill_one_available_cells()
-if inserted:
-    sudoku_list.append({"sudoku": sudoku,
-                    "row_id": None,
-                    "col_id": None,
-                    "available digits": None})
-
-
+    
+    def loop_one_available_cells(self):
+        """Loops through all cells untill no cells with one
+        value available are left.
+        """
+        inserted = True
+        while inserted:
+            inserted = self.fill_one_available_cells()
