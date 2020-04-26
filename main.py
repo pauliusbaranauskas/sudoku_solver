@@ -210,8 +210,14 @@ class Sudoku:
             print(self.sudoku[row_id, col_id])
             raise ValueError("Cell is already occupied")
 
-
-
+    def fill_one_available_cells(self):
+        for row_id in range(9):
+            for col_id in range(9):
+                digits = self.get_available_digits_for_cell(row_id, col_id)
+                if len(digits) == 1:
+                    self.insert_value(row_id, col_id, *digits)
+                    inserted = True
+        return inserted
 
 sudoku = Sudoku(empty_sudoku)
 print(sudoku)
@@ -221,47 +227,14 @@ sudoku_list = [{"sudoku": sudoku,
                 "row_id": None,
                 "col_id": None,
                 "available digits": None}]
-# %%
-def loop_cells(sudoku):
-    for row_id in range(9):
-        for col_id in range(9):
-            digits = sudoku.get_available_digits_for_cell(row_id, col_id)
-            if len(digits) == 1:
-                sudoku.insert_value(row_id, col_id, *digits)
-                inserted = True
-    return sudoku, inserted
 
-sudoku, inserted = loop_cells(sudoku)
+# %%
+
+inserted = sudoku.fill_one_available_cells()
 if inserted:
     sudoku_list.append({"sudoku": sudoku,
                     "row_id": None,
                     "col_id": None,
                     "available digits": None})
 
-print(sudoku)
-# %%
-print(sudoku)
 
-
-# %%
-
-
-# %%
-
-self.loop_cells()
-
-# %%
-
-
-# %%
-sudoku.sudoku
-
-# %%
-
-
-np.nan_to_num(np.array([6, 5, 7, 1, None, 4, None, None, None]))
-
-# %%
-
-
-# %%
