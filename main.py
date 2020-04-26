@@ -233,3 +233,15 @@ class Sudoku:
         inserted = True
         while inserted:
             inserted = self.fill_one_available_cells()
+
+    def find_first_empty_cell(self):
+        """Finds first empty cell in a sudoku. 
+        Goes left to right and top to bottom.
+
+        Returns:
+            int, int: Column id and row id.
+        """
+        for row_id, row in enumerate(self.sudoku):
+            for col_id, column in enumerate(row):
+                if self.sudoku[row_id, col_id] is None:
+                    return col_id, row_id
