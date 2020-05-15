@@ -244,6 +244,13 @@ class Sudoku:
         return True
 
 def fill_vague_cells(sudokus):
+    """Loops through list of sudoku objects and tries possible values
+    Args:
+        sudokus(list): list containing already filled cells.
+
+    Returns:
+        list: list with sudoku rows.
+    """
     while True:
         sudoku = Sudoku(sudokus[-1]["sudoku"].sudoku)
         try:
