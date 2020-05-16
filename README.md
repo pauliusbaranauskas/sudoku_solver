@@ -34,3 +34,4 @@ solved_sudoku = force_sudoku(empty_sudoku)
 # Dictionary
 
 * `easy cell` - cell with one value available only.
+* `section` - either row, column or a square.
