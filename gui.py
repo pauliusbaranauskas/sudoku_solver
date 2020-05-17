@@ -1,6 +1,7 @@
+# %%
 import tkinter as tk
 
-
+# %%
 class SudokuGui:
     def __init__(self, root):
 
@@ -9,7 +10,6 @@ class SudokuGui:
         self.draw_sudoku()
         self.draw_buttons()
         self.mainframe.pack(expand=True)
-        
 
     def draw_sudoku(self):
         self.sudoku_frame = tk.Frame(self.mainframe)
@@ -21,9 +21,13 @@ class SudokuGui:
 
     def draw_buttons(self):
         self.button_frame = tk.Frame(self.root)
-        self.submit_button = tk.Button(self.button_frame, text="SUBMIT", command=self.submit_digits)
+        self.submit_button = tk.Button(
+            self.button_frame, text="SUBMIT", command=self.submit_digits
+        )
         self.submit_button.pack()
-        self.clear_button = tk.Button(self.button_frame, text="CLEAR", command=self.clear_digits)
+        self.clear_button = tk.Button(
+            self.button_frame, text="CLEAR", command=self.clear_digits
+        )
         self.button_frame.pack()
         self.clear_button.pack()
 
@@ -33,8 +37,13 @@ class SudokuGui:
     def clear_digits(self):
         print("b")
 
+
+#%%
 root = tk.Tk()
+
 
 gui = SudokuGui(root)
 
 tk.mainloop()
+
+# %%
