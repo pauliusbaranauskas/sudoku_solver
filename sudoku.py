@@ -235,6 +235,9 @@ class Sudoku:
 
         Raises:
             ValueError: Raises ValueError when there is a digit already.
+
+        Returns:
+            Bool: True if value was inserted.
         """
         if self.check_if_cell_is_empty(row_id, col_id):
             if value in self.sudoku[row_id, :]:
@@ -244,7 +247,9 @@ class Sudoku:
             elif value in self.form_square(row_id, col_id):
                 raise ValueError(
                     f"Value already esists in column {self.get_square_index(row_id, col_id)}")
-            self.sudoku[row_id, col_id] = value
+            else:
+                self.sudoku[row_id, col_id] = value
+                return True
         else:
             print(self.sudoku[row_id, col_id])
             raise ValueError("Cell is already occupied")
@@ -261,8 +266,7 @@ class Sudoku:
             for col_id in range(9):
                 digits = self.get_available_digits_for_cell(row_id, col_id)
                 if len(digits) == 1:
-                    self.insert_value(row_id, col_id, digits[0])
-                    inserted = True
+                    inserted = self.insert_value(row_id, col_id, digits[0])
         return inserted
 
     def loop_one_available_cells(self):
