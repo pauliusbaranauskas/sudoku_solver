@@ -27,7 +27,8 @@ class Sudoku:
         sudoku_out = "\n".join(sudoku_out)
         return sudoku_out
 
-    def get_square_index(self, row_id: int, col_id: int):
+    @staticmethod
+    def get_square_index(row_id: int, col_id: int):
         """Takes column and row ids and returns square index.
 
         Args:
@@ -86,7 +87,8 @@ class Sudoku:
             elif not self.check_list_duplicates(self.form_square_by_index(i)):
                 raise ValueError(f"Duplicates in square {i}")
 
-    def check_list_duplicates(self, row):
+    @staticmethod
+    def check_list_duplicates(row):
         """Checks if list or array contains duplicates.
 
         Arguments:
@@ -259,7 +261,7 @@ class Sudoku:
             for col_id in range(9):
                 digits = self.get_available_digits_for_cell(row_id, col_id)
                 if len(digits) == 1:
-                    self.insert_value(row_id, col_id, *digits)
+                    self.insert_value(row_id, col_id, digits[0])
                     inserted = True
         return inserted
 
@@ -278,8 +280,8 @@ class Sudoku:
         Returns:
             int, int: Column id and row id.
         """
-        for row_id, row in enumerate(self.sudoku):
-            for col_id, column in enumerate(row):
+        for row_id in range(9):
+            for col_id in range(9):
                 if self.sudoku[row_id, col_id] is None:
                     return row_id, col_id
 
@@ -289,6 +291,7 @@ class Sudoku:
         Returns:
             Bool: True if all cells are filled with numbers. Otherwise False.
         """
+        self.check_duplicates()
         for row in self.sudoku:
             if None in row:
                 return False
