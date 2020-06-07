@@ -2,12 +2,13 @@
 import tkinter as tk
 from sudoku import Sudoku
 import numpy as np
+from sudoku import force_sudoku
+
 
 # %%
 class SudokuGui(Sudoku):
     def __init__(self, root):
-        empty_sudoku = [[None] * 9] * 9
-        self.sudoku = Sudoku(empty_sudoku)
+        self.sudoku = Sudoku()
         self.root = root
         self.mainframe = tk.Frame(self.root)
         self.draw_sudoku()
@@ -15,9 +16,13 @@ class SudokuGui(Sudoku):
         self.mainframe.pack(expand=True)
 
     @staticmethod
-    def create_cell(sudoku_frame, row_id, col_id, value=""):
+    def create_cell(sudoku_frame, row_id, col_id, value):
         digits = {"1", "2", "3", "4", "5", "6", "7", "8", "9", ""}
         tkvar = tk.StringVar(root)
+        if value is None:
+            value = ""
+        else:
+            value = str(value)
         tkvar.set(value)
         cell = tk.OptionMenu(sudoku_frame, tkvar, *digits)
         cell.row_id = row_id
@@ -29,9 +34,9 @@ class SudokuGui(Sudoku):
     def draw_sudoku(self):
         self.sudoku_frame = tk.Frame(self.mainframe)
         cells = []
-        for row_id in range(9):
-            for col_id in range(9):
-                cell = self.create_cell(self.sudoku_frame, row_id, col_id)
+        for row_id, row in enumerate(self.sudoku.sudoku):
+            for col_id, cell in enumerate(row):
+                cell = self.create_cell(self.sudoku_frame, row_id, col_id, cell)
                 cells.append(cell)
         self.sudoku_frame.pack()
 
@@ -49,10 +54,12 @@ class SudokuGui(Sudoku):
 
     def submit_digits(self):
         matrix = self.loop_labels()
-        sudoku = Sudoku(matrix)
+        self.sudoku.sudoku = force_sudoku(matrix)
+        self.redraw_sudoku()
 
     def clear_digits(self):
-        pass
+        self.sudoku.sudoku = self.sudoku.get_empty_matrix()
+        self.redraw_sudoku()
 
     @staticmethod
     def insert_value(matrix, row_id, col_id, value):
@@ -63,11 +70,6 @@ class SudokuGui(Sudoku):
         matrix[row_id, col_id] = value
         return matrix
 
-    @staticmethod
-    def get_empty_matrix():
-        matrix = [[None] * 9] * 9
-        matrix = np.array(matrix)
-        return matrix
 
     def loop_labels(self):
         matrix = self.get_empty_matrix()
@@ -76,6 +78,10 @@ class SudokuGui(Sudoku):
                 matrix, child.row_id, child.col_id, child.tkvar.get()
             )
         return matrix
+
+    def redraw_sudoku(self):
+        self.sudoku_frame.destroy()
+        self.draw_sudoku()
 
 
 #%%

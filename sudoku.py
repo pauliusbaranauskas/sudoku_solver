@@ -2,7 +2,9 @@ import numpy as np
 
 
 class Sudoku:
-    def __init__(self, sudoku_row_list: list):
+    def __init__(self, sudoku_row_list: list=False):
+        if sudoku_row_list is False:
+            sudoku_row_list = self.get_empty_matrix()
         self.sudoku = np.array(sudoku_row_list)
         self.validate_matrix()
 
@@ -301,6 +303,16 @@ class Sudoku:
                 return False
         return True
 
+    @staticmethod
+    def get_empty_matrix():
+        """Returns matrix of shape 9x9 with None values only.
+
+        Returns:
+            np.array: Matrix of shape 9x9 with None values only
+        """
+        matrix = [[None] * 9] * 9
+        matrix = np.array(matrix)
+        return matrix
 
 def fill_vague_cells(sudokus):
     """Loops through list of sudoku objects and tries possible values
