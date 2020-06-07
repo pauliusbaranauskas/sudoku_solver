@@ -15,10 +15,9 @@ class SudokuGui(Sudoku):
         self.draw_buttons()
         self.mainframe.pack(expand=True)
 
-    @staticmethod
-    def create_cell(sudoku_frame, row_id, col_id, value):
+    def create_cell(self, sudoku_frame, row_id, col_id, value):
         digits = {"1", "2", "3", "4", "5", "6", "7", "8", "9", ""}
-        tkvar = tk.StringVar(root)
+        tkvar = tk.StringVar(self.root)
         if value is None:
             value = ""
         else:
@@ -82,14 +81,3 @@ class SudokuGui(Sudoku):
     def redraw_sudoku(self):
         self.sudoku_frame.destroy()
         self.draw_sudoku()
-
-
-#%%
-root = tk.Tk()
-
-
-gui = SudokuGui(root)
-
-tk.mainloop()
-
-# %%
