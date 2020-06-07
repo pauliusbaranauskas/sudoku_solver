@@ -6,7 +6,8 @@ class Sudoku:
         if sudoku_row_list is False:
             sudoku_row_list = self.get_empty_matrix()
         self.sudoku = np.array(sudoku_row_list)
-        self.validate_matrix()
+        if self.validate_matrix():
+            pass
 
     def __str__(self):
         line_separator = "-------------------------"
@@ -60,26 +61,35 @@ class Sudoku:
             return 8
 
     def validate_matrix(self):
-        """Checks if sudoku shape is expected.
+        """Checks if sudoku is expected shape.
 
         Raises:
-            ValueError: if row number is not equal to 9.
-            ValueError: If column count is not equal to 9.
+            ValueError: ValueError if row number is not equal to 9.
+            ValueError: ValueError if column count is not equal to 9.
+        
+        Returns:
+            Bool: True if no mistakes were found. Otherwise raises errors.
         """
         rows, cols = self.sudoku.shape
         if rows != 9:
             raise ValueError(f"Incorrect number of rows: {rows}")
         elif cols != 9:
             raise ValueError(f"Incorrect number of columns: {cols}")
-        self.check_duplicates()
+        if self.check_duplicates():
+            return True
 
     def check_duplicates(self):
         """Checks if sudoku contains duplicates in any index.
+        Raises `ValueError` if duplicate is found in any of the sections.
+        Otherwise returns `True`
 
         Raises:
             ValueError: Returns ValueError when duplicates are in a row.
             ValueError: Returns ValueError when duplicates are in a column.
             ValueError: Returns ValueError when duplicates are in a square.
+
+        Returns:
+            Bool: `True` if no duplicates were found. Otherwiser raises `ValueError`.
         """
         for i in range(9):
             if not self.check_list_duplicates(self.sudoku[i, :]):
@@ -88,16 +98,19 @@ class Sudoku:
                 raise ValueError(f"Duplicates in column {i}")
             elif not self.check_list_duplicates(self.form_square_by_index(i)):
                 raise ValueError(f"Duplicates in square {i}")
-
+        return True
+    
     @staticmethod
     def check_list_duplicates(row):
         """Checks if list or array contains duplicates.
+        Returns `False` if duplicates exists in any sections (Does not specify what digit is duplicated).
+        Otherwise returns `True`.
 
         Arguments:
             row (list/array): List or array with numbers.
 
         Returns:
-            Bool: True if there are no duplicates. False otherwise.
+            Bool: True if there are no duplicates. False if duplicates were found in any section.
         """
         row = [digit for digit in row if digit is not None]
         if len(row) == len(set(row)):
@@ -241,20 +254,12 @@ class Sudoku:
         Returns:
             Bool: True if value was inserted.
         """
-        if self.check_if_cell_is_empty(row_id, col_id):
-            if value in self.sudoku[row_id, :]:
-                raise ValueError(f"Value already esists in row {row_id}")
-            elif value in self.sudoku[:, col_id]:
-                raise ValueError(f"Value already esists in column {col_id}")
-            elif value in self.form_square(row_id, col_id):
-                raise ValueError(
-                    f"Value already esists in column {self.get_square_index(row_id, col_id)}")
-            else:
-                self.sudoku[row_id, col_id] = value
-                return True
-        else:
+        if not self.check_if_cell_is_empty(row_id, col_id):
             print(self.sudoku[row_id, col_id])
             raise ValueError("Cell is already occupied")
+        else:
+            if not self.check_if_digit_in_sections(row_id, col_id, value):
+                self.sudoku[row_id, col_id] = value
 
     def fill_one_available_cells(self):
         """Runs through all cells once and fills in those that
@@ -297,10 +302,10 @@ class Sudoku:
         Returns:
             Bool: True if all cells are filled with numbers. Otherwise False.
         """
-        self.check_duplicates()
-        for row in self.sudoku:
-            if None in row:
-                return False
+        if self.check_duplicates():
+            for row in self.sudoku:
+                if None in row:
+                    return False
         return True
 
     @staticmethod
@@ -313,6 +318,34 @@ class Sudoku:
         matrix = [[None] * 9] * 9
         matrix = np.array(matrix)
         return matrix
+
+    def check_if_digit_in_sections(self, row_id, col_id, value):
+        """Checks if digit is not repeated in row, column or square.
+        Returns `False` if digit could be inserted. Otherwise raises `ValueError`.
+
+        Args:
+            row_id (int): Row in which digit should be inserted.
+            col_id (int): Column in which digit should be inserted.
+            value (int): Digit that should be inserted.
+
+        Raises:
+            ValueError: `ValueError` if digit already exists in row.
+            ValueError: `ValueError` if digit already exists in column.
+            ValueError: `ValueError` if digit already exists in square.
+
+        Returns:
+            Bool: `False` if digit is not in any of the sections.
+        """
+        if value in self.sudoku[row_id, :]:
+            raise ValueError(f"Value already esists in row {row_id}")
+        elif value in self.sudoku[:, col_id]:
+            raise ValueError(f"Value already esists in column {col_id}")
+        elif value in self.form_square(row_id, col_id):
+            raise ValueError(
+                f"Value already esists in column {self.get_square_index(row_id, col_id)}")
+        else:
+            return False
+
 
 def fill_vague_cells(sudokus):
     """Loops through list of sudoku objects and tries possible values
@@ -357,7 +390,7 @@ def fill_vague_cells(sudokus):
         if sudoku.check_if_full_sudoku():
             return sudoku.sudoku
 
-
+            
 def force_sudoku(empty_sudoku):
     """Runs through all cells and fills them with numbers by checking what
     numbers are available one by one.
