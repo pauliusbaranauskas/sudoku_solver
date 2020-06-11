@@ -277,7 +277,7 @@ class Sudoku:
         return inserted
 
     def loop_one_available_cells(self):
-        """Loops through all cells untill no cells with one
+        """Loops through all cells until no cells with one
         value available are left.
         """
         inserted = True
