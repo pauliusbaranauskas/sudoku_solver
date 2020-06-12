@@ -27,7 +27,7 @@ class SudokuGui(Sudoku):
         Returns:
             Tk.OptionMenu: Created dropdown list.
         """
-        digits = {"1", "2", "3", "4", "5", "6", "7", "8", "9", " "}
+        digits = ["1", "2", "3", "4", "5", "6", "7", "8", "9", " "]
         tkvar = tk.StringVar(self.root)
         if value is None:
             value = " "
@@ -64,7 +64,7 @@ class SudokuGui(Sudoku):
         )
         self.submit_button.pack(side="left")
         self.clear_button.pack(side="right")
-        self.button_frame.pack()
+        self.button_frame.pack(fill=tk.X)
 
     def submit_digits(self):
         """Runs through cells, takes digits from cells, passes rezults to a solver
