@@ -196,7 +196,10 @@ class Sudoku:
             Bool: True if cell is empty (contains None), False if
             digit is present.
         """
-        return True if self.sudoku[row_id, col_id] is None else False
+        if self.sudoku[row_id, col_id] is None:
+            return True
+        else:
+            return False
 
     def get_available_digits_for_cell(self, row_id, col_id):
         """Checks what digits in range from 1 to 9 could be used in a cell.
@@ -239,6 +242,7 @@ class Sudoku:
         else:
             if not self.check_if_digit_in_sections(row_id, col_id, value):
                 self.sudoku[row_id, col_id] = value
+                return True
 
     def fill_one_available_cells(self):
         """Runs through all cells once and fills in those that
@@ -247,21 +251,14 @@ class Sudoku:
         Returns:
             Bool: True if at least one value was inserted. Otherwise False.
         """
-        inserted = False
-        for row_id in range(9):
-            for col_id in range(9):
-                digits = self.get_available_digits_for_cell(row_id, col_id)
-                if len(digits) == 1:
-                    inserted = self.insert_value(row_id, col_id, digits[0])
-        return inserted
-
-    def loop_one_available_cells(self):
-        """Loops through all cells until no cells with one
-        value available are left.
-        """
         inserted = True
         while inserted:
-            inserted = self.fill_one_available_cells()
+            inserted = False
+            for row_id in range(9):
+                for col_id in range(9):
+                    digits = self.get_available_digits_for_cell(row_id, col_id)
+                    if len(digits) == 1:
+                        inserted = self.insert_value(row_id, col_id, digits[0])
 
     def find_first_empty_cell(self):
         """Finds first empty cell in a sudoku.
@@ -355,7 +352,7 @@ def fill_vague_cells(sudokus):
                 break
 
         sudoku.insert_value(row_id, col_id, digits[0])
-        sudoku.loop_one_available_cells()
+        sudoku.fill_one_available_cells()
 
         sudokus.append(
             {
@@ -382,7 +379,7 @@ def force_sudoku(empty_sudoku):
         np.array: Solved sudoku.
     """
     sudoku = Sudoku(empty_sudoku)
-    sudoku.loop_one_available_cells()
+    sudoku.fill_one_available_cells()
     sudokus = [
         {"sudoku": sudoku, "row_id": None, "col_id": None, "digits": None}
     ]

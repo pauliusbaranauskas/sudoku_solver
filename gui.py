@@ -29,7 +29,11 @@ class SudokuGui(Sudoku):
         """
         digits = ["1", "2", "3", "4", "5", "6", "7", "8", "9", " "]
         tkvar = tk.StringVar(self.root)
-        value = " " if value is None else str(value)
+
+        if value is None:
+            value = " "
+        else:
+            value = str(value)
         tkvar.set(value)
         cell = tk.OptionMenu(sudoku_frame, tkvar, *digits)
         cell.row_id = row_id
@@ -90,7 +94,10 @@ class SudokuGui(Sudoku):
         Returns:
             np.matrix: Updated matrix.
         """
-        value = None if value == " " else int(value)
+        if value == " ":
+            value = None
+        else:
+            value = int(value)
         matrix[row_id, col_id] = value
         return matrix
 
