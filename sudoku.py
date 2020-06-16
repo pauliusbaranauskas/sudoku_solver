@@ -41,7 +41,7 @@ class Sudoku:
         Returns:
             int: Square id.
         """
-        return (row_id/3)*3 + col_id/3
+        return (row_id//3)*3 + col_id//3
 
     def validate_matrix(self):
         """Checks if sudoku is expected shape.
