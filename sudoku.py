@@ -75,34 +75,33 @@ class Sudoku:
             Bool: `True` if no duplicates were found. Otherwiser raises `ValueError`.
         """
         for i in range(9):
-            if not self.check_list_duplicates(self.sudoku[i, :]):
+            if self.check_list_duplicates(self.sudoku[i, :]):
                 raise ValueError(f"Duplicates in row {i}")
-            elif not self.check_list_duplicates(self.sudoku[:, i]):
+            elif self.check_list_duplicates(self.sudoku[:, i]):
                 raise ValueError(f"Duplicates in column {i}")
-            elif not self.check_list_duplicates(self.form_square_by_index(i)):
+            elif self.check_list_duplicates(self.form_square_by_index(i)):
                 raise ValueError(f"Duplicates in square {i}")
         return True
     
     @staticmethod
     def check_list_duplicates(row):
         """Checks if list or array contains duplicates.
-        Returns `False` if duplicates exists in any sections (Does not specify what digit is duplicated).
-        Otherwise returns `True`.
+        Returns `True` if duplicates exists in a given list (Does not specify what digit is duplicated).
+        Otherwise returns `False`.
 
         Arguments:
             row (list/array): List or array with numbers.
 
         Returns:
-            Bool: True if there are no duplicates. False if duplicates were found in any section.
+            Bool: False if there are no duplicates, otherwise True
         """
         row = [digit for digit in row if digit is not None]
-        if len(row) == len(set(row)):
+        if len(row) != len(set(row)):
             return True
-        else:
-            return False
+        return False
 
     def check_if_digits_in_row(self, row_id: int, digits: list):
-        """Goes throught the list of digits and returns list of digits
+        """Goes through the list of digits and returns list of digits
         that are not present in row.
 
         Args:
@@ -117,7 +116,7 @@ class Sudoku:
         return [digit for digit in digits if digit not in row]
 
     def check_if_digits_in_column(self, col_id, digits):
-        """Goes throught the list of digits and returns list of digits
+        """Goes through the list of digits and returns list of digits
         that are not present in column.
 
         Args:
@@ -172,7 +171,7 @@ class Sudoku:
         return square_out
 
     def check_if_digits_in_square(self, row_id, col_id, digits):
-        """Goes throught the list of digits and returns list of digits
+        """Goes through the list of digits and returns list of digits
         that are not present in square.
 
         Args:
@@ -197,10 +196,7 @@ class Sudoku:
             Bool: True if cell is empty (contains None), False if
             digit is present.
         """
-        if self.sudoku[row_id, col_id] is None:
-            return True
-        else:
-            return False
+        return True if self.sudoku[row_id, col_id] is None else False
 
     def get_available_digits_for_cell(self, row_id, col_id):
         """Checks what digits in range from 1 to 9 could be used in a cell.
@@ -246,10 +242,10 @@ class Sudoku:
 
     def fill_one_available_cells(self):
         """Runs through all cells once and fills in those that
-        have only one value possible.
+        have only one possible value.
 
         Returns:
-            Bool: True if at least one value was insterted. Otherwise False.
+            Bool: True if at least one value was inserted. Otherwise False.
         """
         inserted = False
         for row_id in range(9):
@@ -320,12 +316,12 @@ class Sudoku:
             Bool: `False` if digit is not in any of the sections.
         """
         if value in self.sudoku[row_id, :]:
-            raise ValueError(f"Value already esists in row {row_id}")
+            raise ValueError(f"Value already exists in row {row_id}")
         elif value in self.sudoku[:, col_id]:
-            raise ValueError(f"Value already esists in column {col_id}")
+            raise ValueError(f"Value already exists in column {col_id}")
         elif value in self.form_square(row_id, col_id):
             raise ValueError(
-                f"Value already esists in column {self.get_square_index(row_id, col_id)}")
+                f"Value already exists in column {self.get_square_index(row_id, col_id)}")
         else:
             return False
 
