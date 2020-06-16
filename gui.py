@@ -29,7 +29,6 @@ class SudokuGui(Sudoku):
         """
         digits = ["1", "2", "3", "4", "5", "6", "7", "8", "9", " "]
         tkvar = tk.StringVar(self.root)
-
         if value is None:
             value = " "
         else:
