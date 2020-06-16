@@ -29,10 +29,7 @@ class SudokuGui(Sudoku):
         """
         digits = ["1", "2", "3", "4", "5", "6", "7", "8", "9", " "]
         tkvar = tk.StringVar(self.root)
-        if value is None:
-            value = " "
-        else:
-            value = str(value)
+        value = " " if value is None else str(value)
         tkvar.set(value)
         cell = tk.OptionMenu(sudoku_frame, tkvar, *digits)
         cell.row_id = row_id
@@ -67,7 +64,7 @@ class SudokuGui(Sudoku):
         self.button_frame.pack(fill=tk.X)
 
     def submit_digits(self):
-        """Runs through cells, takes digits from cells, passes rezults to a solver
+        """Runs through cells, takes digits from cells, passes results to a solver
         and fills cells with solutions.
         """
         matrix = self.loop_labels()
@@ -93,10 +90,7 @@ class SudokuGui(Sudoku):
         Returns:
             np.matrix: Updated matrix.
         """
-        if value == " ":
-            value = None
-        else:
-            value = int(value)
+        value = None if value == " " else int(value)
         matrix[row_id, col_id] = value
         return matrix
 

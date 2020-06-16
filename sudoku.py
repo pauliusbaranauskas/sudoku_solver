@@ -41,30 +41,13 @@ class Sudoku:
         Returns:
             int: Square id.
         """
-        if row_id < 3 and col_id < 3:
-            return 0
-        elif row_id < 3 and col_id < 6:
-            return 1
-        elif row_id < 3:
-            return 2
-        elif row_id < 6 and col_id < 3:
-            return 3
-        elif row_id < 6 and col_id < 6:
-            return 4
-        elif row_id < 6:
-            return 5
-        elif col_id < 3:
-            return 6
-        elif col_id < 6:
-            return 7
-        else:
-            return 8
+        return (row_id/3)*3 + col_id/3
 
     def validate_matrix(self):
         """Checks if sudoku is expected shape.
 
         Raises:
-            ValueError: ValueError if row number is not equal to 9.
+            ValueError: ValueError if row count is not equal to 9.
             ValueError: ValueError if column count is not equal to 9.
         
         Returns:
