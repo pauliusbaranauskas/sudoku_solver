@@ -4,6 +4,7 @@ from sudoku import Sudoku
 import numpy as np
 from sudoku import force_sudoku
 from tkinter import ttk
+from mistake_window import MistakeWindow
 
 # %%
 class SudokuGui(Sudoku):
@@ -102,7 +103,11 @@ class SudokuGui(Sudoku):
         and fills cells with solutions.
         """
         matrix = self.loop_labels()
-        self.sudoku.sudoku = force_sudoku(matrix)
+        try:
+            self.sudoku.sudoku = force_sudoku(matrix)
+        except ValueError as e:
+            self.pop_mistake(e)
+            return
         self.redraw_sudoku()
 
     def clear_digits(self):
@@ -110,6 +115,16 @@ class SudokuGui(Sudoku):
         """
         self.sudoku.sudoku = self.sudoku.get_empty_matrix()
         self.redraw_sudoku()
+
+    @staticmethod
+    def pop_mistake(error_message):
+        """Displays error message in pop-up window.
+
+        Args:
+            error_message (str): Error message to display.
+        """
+        mistake_tk = tk.Tk()
+        mistake = MistakeWindow(mistake_tk, error_message)
 
     @staticmethod
     def insert_value(matrix, row_id, col_id, value):
