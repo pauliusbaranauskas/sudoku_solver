@@ -3,7 +3,7 @@ import tkinter as tk
 from sudoku import Sudoku
 import numpy as np
 from sudoku import force_sudoku
-
+from tkinter import ttk
 
 # %%
 class SudokuGui(Sudoku):
@@ -14,6 +14,30 @@ class SudokuGui(Sudoku):
         self.draw_sudoku()
         self.draw_buttons()
         self.mainframe.pack(expand=True)
+
+    def create_row_separator(self, parent, row_id, col_id):
+        """Inserts horizontal separator between lines.
+
+        Args:
+            parent (tk.Frame): Tkinter frame used as a parent.
+            row_id (int): Position of label in a grid.
+            col_id (int): Position of label in a grid.
+        """
+        separator = ttk.Separator(parent, orient=tk.HORIZONTAL)
+        separator.separator = True
+        separator.grid(column=col_id, row=row_id, pady=5)
+
+    def insert_column_separator(self, parent, row_id, col_id):
+        """Inserts vertical separator between columns
+
+        Args:
+            parent (tk.Frame): Parent frame.
+            row_id (int): Position of label in a grid.
+            col_id (int): Position of label in a grid.
+        """
+        separator = ttk.Separator(parent, orient=tk.VERTICAL)
+        separator.separator = True
+        separator.grid(column=col_id, row=row_id, padx=5)
 
     def create_cell(self, sudoku_frame, row_id, col_id, value):
         """Creates a single cell for a single number.
@@ -27,6 +51,12 @@ class SudokuGui(Sudoku):
         Returns:
             Tk.OptionMenu: Created dropdown list.
         """
+        grid_row = row_id + row_id // 3
+        grid_column = col_id + col_id // 3
+        if row_id in [3, 6]:
+            self.create_row_separator(sudoku_frame, grid_row, grid_column)
+        if col_id in [3, 6]:
+            self.insert_column_separator(sudoku_frame, grid_row, grid_column)
         digits = ["1", "2", "3", "4", "5", "6", "7", "8", "9", " "]
         tkvar = tk.StringVar(self.root)
         if value is None:
@@ -38,7 +68,8 @@ class SudokuGui(Sudoku):
         cell.row_id = row_id
         cell.col_id = col_id
         cell.tkvar = tkvar
-        cell.grid(row=row_id, column=col_id)
+        cell.separator = False
+        cell.grid(row=grid_row + 1, column=grid_column + 1)
         return cell
 
     def draw_sudoku(self):
@@ -100,7 +131,6 @@ class SudokuGui(Sudoku):
         matrix[row_id, col_id] = value
         return matrix
 
-
     def loop_labels(self):
         """Loops through cells, extracts digits and formats matrix.
 
@@ -109,9 +139,10 @@ class SudokuGui(Sudoku):
         """
         matrix = self.get_empty_matrix()
         for child in self.sudoku_frame.children.values():
-            matrix = self.insert_value(
-                matrix, child.row_id, child.col_id, child.tkvar.get()
-            )
+            if child.separator is False:
+                matrix = self.insert_value(
+                    matrix, child.row_id, child.col_id, child.tkvar.get()
+                )
         return matrix
 
     def redraw_sudoku(self):
