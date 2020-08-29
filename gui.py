@@ -98,7 +98,7 @@ class SudokuGui(Sudoku):
         self.button_frame.pack(fill=tk.X)
 
     def submit_digits(self):
-        """Runs through cells, takes digits from cells, passes rezults to a solver
+        """Runs through cells, takes digits from cells, passes results to a solver
         and fills cells with solutions.
         """
         matrix = self.loop_labels()
