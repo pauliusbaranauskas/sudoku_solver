@@ -41,30 +41,13 @@ class Sudoku:
         Returns:
             int: Square id.
         """
-        if row_id < 3 and col_id < 3:
-            return 0
-        elif row_id < 3 and col_id < 6:
-            return 1
-        elif row_id < 3:
-            return 2
-        elif row_id < 6 and col_id < 3:
-            return 3
-        elif row_id < 6 and col_id < 6:
-            return 4
-        elif row_id < 6:
-            return 5
-        elif col_id < 3:
-            return 6
-        elif col_id < 6:
-            return 7
-        else:
-            return 8
+        return (row_id//3)*3 + col_id//3
 
     def validate_matrix(self):
         """Checks if sudoku is expected shape.
 
         Raises:
-            ValueError: ValueError if row number is not equal to 9.
+            ValueError: ValueError if row count is not equal to 9.
             ValueError: ValueError if column count is not equal to 9.
         
         Returns:
@@ -92,34 +75,33 @@ class Sudoku:
             Bool: `True` if no duplicates were found. Otherwiser raises `ValueError`.
         """
         for i in range(9):
-            if not self.check_list_duplicates(self.sudoku[i, :]):
+            if self.check_list_duplicates(self.sudoku[i, :]):
                 raise ValueError(f"Duplicates in row {i}")
-            elif not self.check_list_duplicates(self.sudoku[:, i]):
+            elif self.check_list_duplicates(self.sudoku[:, i]):
                 raise ValueError(f"Duplicates in column {i}")
-            elif not self.check_list_duplicates(self.form_square_by_index(i)):
+            elif self.check_list_duplicates(self.form_square_by_index(i)):
                 raise ValueError(f"Duplicates in square {i}")
         return True
     
     @staticmethod
     def check_list_duplicates(row):
         """Checks if list or array contains duplicates.
-        Returns `False` if duplicates exists in any sections (Does not specify what digit is duplicated).
-        Otherwise returns `True`.
+        Returns `True` if duplicates exists in a given list (Does not specify what digit is duplicated).
+        Otherwise returns `False`.
 
         Arguments:
             row (list/array): List or array with numbers.
 
         Returns:
-            Bool: True if there are no duplicates. False if duplicates were found in any section.
+            Bool: False if there are no duplicates, otherwise True
         """
         row = [digit for digit in row if digit is not None]
-        if len(row) == len(set(row)):
+        if len(row) != len(set(row)):
             return True
-        else:
-            return False
+        return False
 
     def check_if_digits_in_row(self, row_id: int, digits: list):
-        """Goes throught the list of digits and returns list of digits
+        """Goes through the list of digits and returns list of digits
         that are not present in row.
 
         Args:
@@ -134,7 +116,7 @@ class Sudoku:
         return [digit for digit in digits if digit not in row]
 
     def check_if_digits_in_column(self, col_id, digits):
-        """Goes throught the list of digits and returns list of digits
+        """Goes through the list of digits and returns list of digits
         that are not present in column.
 
         Args:
@@ -189,7 +171,7 @@ class Sudoku:
         return square_out
 
     def check_if_digits_in_square(self, row_id, col_id, digits):
-        """Goes throught the list of digits and returns list of digits
+        """Goes through the list of digits and returns list of digits
         that are not present in square.
 
         Args:
@@ -260,29 +242,23 @@ class Sudoku:
         else:
             if not self.check_if_digit_in_sections(row_id, col_id, value):
                 self.sudoku[row_id, col_id] = value
+                return True
 
     def fill_one_available_cells(self):
         """Runs through all cells once and fills in those that
-        have only one value possible.
+        have only one possible value.
 
         Returns:
-            Bool: True if at least one value was insterted. Otherwise False.
-        """
-        inserted = False
-        for row_id in range(9):
-            for col_id in range(9):
-                digits = self.get_available_digits_for_cell(row_id, col_id)
-                if len(digits) == 1:
-                    inserted = self.insert_value(row_id, col_id, digits[0])
-        return inserted
-
-    def loop_one_available_cells(self):
-        """Loops through all cells until no cells with one
-        value available are left.
+            Bool: True if at least one value was inserted. Otherwise False.
         """
         inserted = True
         while inserted:
-            inserted = self.fill_one_available_cells()
+            inserted = False
+            for row_id in range(9):
+                for col_id in range(9):
+                    digits = self.get_available_digits_for_cell(row_id, col_id)
+                    if len(digits) == 1:
+                        inserted = self.insert_value(row_id, col_id, digits[0])
 
     def find_first_empty_cell(self):
         """Finds first empty cell in a sudoku.
@@ -337,12 +313,12 @@ class Sudoku:
             Bool: `False` if digit is not in any of the sections.
         """
         if value in self.sudoku[row_id, :]:
-            raise ValueError(f"Value already esists in row {row_id}")
+            raise ValueError(f"Value already exists in row {row_id}")
         elif value in self.sudoku[:, col_id]:
-            raise ValueError(f"Value already esists in column {col_id}")
+            raise ValueError(f"Value already exists in column {col_id}")
         elif value in self.form_square(row_id, col_id):
             raise ValueError(
-                f"Value already esists in column {self.get_square_index(row_id, col_id)}")
+                f"Value already exists in column {self.get_square_index(row_id, col_id)}")
         else:
             return False
 
@@ -376,7 +352,7 @@ def fill_vague_cells(sudokus):
                 break
 
         sudoku.insert_value(row_id, col_id, digits[0])
-        sudoku.loop_one_available_cells()
+        sudoku.fill_one_available_cells()
 
         sudokus.append(
             {
@@ -403,7 +379,7 @@ def force_sudoku(empty_sudoku):
         np.array: Solved sudoku.
     """
     sudoku = Sudoku(empty_sudoku)
-    sudoku.loop_one_available_cells()
+    sudoku.fill_one_available_cells()
     sudokus = [
         {"sudoku": sudoku, "row_id": None, "col_id": None, "digits": None}
     ]
