@@ -54,7 +54,7 @@ class SudokuGui(Sudoku):
         grid_row = row_id + row_id // 3
         grid_column = col_id + col_id // 3
         if row_id in [3, 6]:
-            self.create_row_separator(sudoku_frame, grid_row, grid_column)
+            self.insert_row_separator(sudoku_frame, grid_row, grid_column)
         if col_id in [3, 6]:
             self.insert_column_separator(sudoku_frame, grid_row, grid_column)
         digits = ["1", "2", "3", "4", "5", "6", "7", "8", "9", " "]
