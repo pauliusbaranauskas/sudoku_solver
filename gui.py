@@ -15,7 +15,7 @@ class SudokuGui(Sudoku):
         self.draw_buttons()
         self.mainframe.pack(expand=True)
 
-    def create_row_separator(self, parent, row_id, col_id):
+    def insert_row_separator(self, parent, row_id, col_id):
         """Inserts horizontal separator between lines.
 
         Args:
